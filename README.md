@@ -2,8 +2,7 @@
 
 ## 🔹 Description
 
-**Kipu-Bank_v2** is the second iteration of the smart banking system originally designed just for ETH handling. This new version introduces a modern, secure, and flexible approach based on multiple ERC-20 assets, with a dynamic risk limit expressed in USD and
- es la segunda versión del sistema bancario inteligente originalmente diseñado para manejar solo ETH. Esta nueva versión introduce un enfoque moderno, seguro y flexible basado en múltiples activos ERC-20, con un límite de riesgo dinámico expresado en USD y validado mediante oráculos de Chainlink.
+**Kipu-Bank_v2** is the second iteration of the smart banking system originally designed just for ETH handling. This new version introduces a modern, secure, and flexible approach based on multiple ERC-20 assets, with a dynamic risk limit expressed in USD and validated through Chainlink oracles.
 
 ---
 
