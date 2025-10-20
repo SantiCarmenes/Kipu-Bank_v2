@@ -1,6 +1,8 @@
-# 🚀 KipuBank V2: Moneda Digital Segura y Flexible
+# 🌐 KipuBank
 
-**KipuBank V2** es la versión final y refactorizada del sistema bancario inteligente originalmente diseñado para manejar solo ETH. Esta nueva versión introduce un enfoque moderno, seguro y flexible basado en múltiples activos ERC-20, con un límite de riesgo dinámico expresado en USD y validado mediante oráculos de Chainlink.
+## 🔹 Descripción
+
+**KipuBank V2** es la segunda versión del sistema bancario inteligente originalmente diseñado para manejar solo ETH. Esta nueva versión introduce un enfoque moderno, seguro y flexible basado en múltiples activos ERC-20, con un límite de riesgo dinámico expresado en USD y validado mediante oráculos de Chainlink.
 
 ---
 
@@ -46,12 +48,12 @@ El límite en USD requiere oráculos reales. Setearlos usando `setPriceFeed(addr
 | Activo | Dirección Token (Sepolia) | Chainlink Price Feed |
 |--------|--------------------------|----------------------|
 | ETH | `0x0000000000000000000000000000000000000000` | `0x694AA1769357215DE4FAC081bf1f309aDC325306` |
-| USDC | `0x1c7d4b196cb0c7b01d743fbc6116a902379c7238` | `0x0d79df66BE487753B02D015Fb622DED7f0E9798d` |
+| USDC | `0x1c7d4b196cb0c7b01d743fbc6116a902379c7238` | `0xA2F78ab2355fe2f984D808B5CeE7FD0A93D5270E` |
 
 ### ✅ Ejemplo para configurar USDC
 
 ```bash
-cast send <KIPU_BANK_ADDRESS> "setPriceFeed(address,address)"   "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238"   "0x0d79df66BE487753B02D015Fb622DED7f0E9798d"   --private-key $PRIVATE_KEY
+cast send <KIPU_BANK_ADDRESS> "setPriceFeed(address,address)"   "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238"   "0xA2F78ab2355fe2f984D808B5CeE7FD0A93D5270E"   --private-key $PRIVATE_KEY
 ```
 
 ---
