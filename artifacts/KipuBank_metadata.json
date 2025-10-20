@@ -1,0 +1,849 @@
+{
+	"compiler": {
+		"version": "0.8.30+commit.73712a01"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_bankCap",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_withdrawLimit",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [],
+				"name": "KipuBank__AmountMustBeGreaterThanZero",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "attempted",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "cap",
+						"type": "uint256"
+					}
+				],
+				"name": "KipuBank__ExceedsBankCap",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "attempted",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "limit",
+						"type": "uint256"
+					}
+				],
+				"name": "KipuBank__ExceedsWithdrawLimit",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "requested",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "available",
+						"type": "uint256"
+					}
+				],
+				"name": "KipuBank__InsufficientBalance",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "KipuBank__NotAToken",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "KipuBank__OracleCompromised",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "tokenAddress",
+						"type": "address"
+					}
+				],
+				"name": "KipuBank__PriceFeedNotSet",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "KipuBank__StalePrice",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "KipuBank__TransferFailed",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "OwnableInvalidOwner",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "OwnableUnauthorizedAccount",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "SafeERC20FailedOperation",
+				"type": "error"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "Deposited",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "feed",
+						"type": "address"
+					}
+				],
+				"name": "PriceFeedUpdated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "Withdrawn",
+				"type": "event"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "fallback"
+			},
+			{
+				"inputs": [],
+				"name": "ETH_ADDRESS",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ORACLE_HEARTBEAT",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "deposit",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_tokenAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "depositToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_tokenAddress",
+						"type": "address"
+					}
+				],
+				"name": "getMyBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTotalEthBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_tokenAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "getValueInUsd",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "i_bankCap",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "i_withdrawLimit",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "renounceOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "s_balances",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "s_tokenInfo",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "priceFeed",
+						"type": "address"
+					},
+					{
+						"internalType": "uint8",
+						"name": "decimals",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "s_totalDeposits",
+				"outputs": [
+					{
+						"internalType": "uint32",
+						"name": "",
+						"type": "uint32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "s_totalUsdValue",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "s_totalWithdrawals",
+				"outputs": [
+					{
+						"internalType": "uint32",
+						"name": "",
+						"type": "uint32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_tokenAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_priceFeedAddress",
+						"type": "address"
+					}
+				],
+				"name": "setPriceFeed",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdraw",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_tokenAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "withdrawToken",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
+			}
+		],
+		"devdoc": {
+			"author": "Santiago Carmenes",
+			"errors": {
+				"OwnableInvalidOwner(address)": [
+					{
+						"details": "The owner is not a valid owner account. (eg. `address(0)`)"
+					}
+				],
+				"OwnableUnauthorizedAccount(address)": [
+					{
+						"details": "The caller account is not authorized to perform an operation."
+					}
+				],
+				"SafeERC20FailedOperation(address)": [
+					{
+						"details": "An operation with an ERC-20 token failed."
+					}
+				]
+			},
+			"kind": "dev",
+			"methods": {
+				"constructor": {
+					"params": {
+						"_bankCap": "Total USD limit for the bank",
+						"_withdrawLimit": "Maximum withdrawal limit per transaction"
+					}
+				},
+				"deposit()": {
+					"details": "Uses withinBankCap modifier to enforce bank cap"
+				},
+				"depositToken(address,uint256)": {
+					"params": {
+						"_amount": "Amount of tokens to deposit",
+						"_tokenAddress": "Address of the ERC20 token"
+					}
+				},
+				"getMyBalance(address)": {
+					"params": {
+						"_tokenAddress": "Address of the ERC20 token"
+					},
+					"returns": {
+						"_0": "balance Amount of tokens available for the user"
+					}
+				},
+				"getTotalEthBalance()": {
+					"returns": {
+						"_0": "totalBalance Total ETH stored in the contract"
+					}
+				},
+				"getValueInUsd(address,uint256)": {
+					"params": {
+						"_amount": "Amount of tokens",
+						"_tokenAddress": "Address of the token"
+					},
+					"returns": {
+						"_0": "valueInUsd Value in USD with decimals"
+					}
+				},
+				"owner()": {
+					"details": "Returns the address of the current owner."
+				},
+				"renounceOwnership()": {
+					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+				},
+				"setPriceFeed(address,address)": {
+					"params": {
+						"_tokenAddress": "Address of the token"
+					}
+				},
+				"transferOwnership(address)": {
+					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				},
+				"withdraw(uint256)": {
+					"details": "Uses withinWithdrawLimit and hasSufficientBalance modifiers",
+					"params": {
+						"_amount": "Amount of ETH to withdraw"
+					}
+				},
+				"withdrawToken(address,uint256)": {
+					"params": {
+						"_amount": "Amount of tokens to withdraw",
+						"_tokenAddress": "Address of the ERC20 token"
+					}
+				}
+			},
+			"stateVariables": {
+				"i_bankCap": {
+					"details": "Chose to use uint256 since ERC20 tokens also use uint256 for amounts"
+				},
+				"s_balances": {
+					"details": "mapping(TokenAddress => mapping(UserAddress => Amount)) "
+				},
+				"s_tokenInfo": {
+					"details": "mapping(TokenAddress => TokenInfo)"
+				}
+			},
+			"title": "KipuBank - A simple bank with deposit and withdrawal limits",
+			"version": 1
+		},
+		"userdoc": {
+			"errors": {
+				"KipuBank__ExceedsBankCap(uint256,uint256)": [
+					{
+						"notice": "-----------------------------------------------------------------------------------------------                                         ERRORS -----------------------------------------------------------------------------------------------"
+					}
+				]
+			},
+			"events": {
+				"Deposited(address,address,uint256)": {
+					"notice": "Emitted upon ETH deposit"
+				},
+				"PriceFeedUpdated(address,address)": {
+					"notice": "Emitted when a price feed is updated"
+				},
+				"Withdrawn(address,address,uint256)": {
+					"notice": "Emitted upon ETH withdrawal"
+				}
+			},
+			"kind": "user",
+			"methods": {
+				"ETH_ADDRESS()": {
+					"notice": "ETH address constant"
+				},
+				"ORACLE_HEARTBEAT()": {
+					"notice": "The maximum age of a price feed update (e.g., 1 hour)"
+				},
+				"constructor": {
+					"notice": "Constructor to initialize bank cap and withdrawal limit"
+				},
+				"deposit()": {
+					"notice": "Calls internal deposit function for ETH deposits"
+				},
+				"depositToken(address,uint256)": {
+					"notice": "Deposit ERC20 tokens into the bank"
+				},
+				"getMyBalance(address)": {
+					"notice": "Check your own token balance"
+				},
+				"getTotalEthBalance()": {
+					"notice": "Check the total balance of the bank"
+				},
+				"getValueInUsd(address,uint256)": {
+					"notice": "Get value of a token amount in USD"
+				},
+				"i_bankCap()": {
+					"notice": "Total ETH limit that can be stored in the bank"
+				},
+				"i_withdrawLimit()": {
+					"notice": "ETH limit that can be withdrawn in a single transaction"
+				},
+				"s_balances(address,address)": {
+					"notice": "User balances mapping"
+				},
+				"s_tokenInfo(address)": {
+					"notice": "Token information mapping"
+				},
+				"s_totalDeposits()": {
+					"notice": "Total number of historical deposits"
+				},
+				"s_totalUsdValue()": {
+					"notice": "Total USD value stored in the bank"
+				},
+				"s_totalWithdrawals()": {
+					"notice": "Total number of historical withdrawals"
+				},
+				"setPriceFeed(address,address)": {
+					"notice": "Set the price feed address for a token"
+				},
+				"withdraw(uint256)": {
+					"notice": "Withdraw ETH from the bank"
+				},
+				"withdrawToken(address,uint256)": {
+					"notice": "Withdraw ERC20 tokens from the bank"
+				}
+			},
+			"notice": "This contract allows users to deposit and withdraw ETH with security limits",
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"src/Kipu-Bank_v2.sol": "KipuBank"
+		},
+		"evmVersion": "prague",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": [
+			":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+			":chainlink-brownie-contracts/=lib/chainlink-brownie-contracts/",
+			":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+			":forge-std/=lib/forge-std/src/",
+			":halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/",
+			":kipubank/=src/",
+			":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+		]
+	},
+	"sources": {
+		"lib/chainlink-brownie-contracts/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol": {
+			"keccak256": "0xf9510b93a8b01dac3ac6b4f0acc347b0361b4bcb0482a15c2bcf0dcd8f68e2fa",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e8d1c366bfb117b6094402363a8a8d09abc483c33d1d704bd4a61282888a28de",
+				"dweb:/ipfs/QmNQwmbRwpzhoh7FET1VwVHMZq9LPpf3Ag7tpVrhxSgrez"
+			]
+		},
+		"lib/openzeppelin-contracts/contracts/access/Ownable.sol": {
+			"keccak256": "0xe889e9f6b8469155c967f403ad7508eaa66af8cad1cb9a003536a8e4f281d348",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://e6e32c81c8d84199eda0de40d33bb77c7acbb482e3f545d5cfba8195af0a88e0",
+				"dweb:/ipfs/Qmaf1WAinzjYWGNxRzCTmn2QABFWS912HwC8eiD7cyTgis"
+			]
+		},
+		"lib/openzeppelin-contracts/contracts/interfaces/IERC1363.sol": {
+			"keccak256": "0x27d48fb11259528345803c0aa48dde8e2d495bb96cfd244191505dbd80d9cf5d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://137014f0ec2156eeb5472b07eafba7630e39db6648ca7627afbb87f023676b9e",
+				"dweb:/ipfs/QmYhDHgKSUmDyWnqFGq8UbaYATsUVCHkdG5EgwrUVsZuUC"
+			]
+		},
+		"lib/openzeppelin-contracts/contracts/interfaces/IERC165.sol": {
+			"keccak256": "0xc6ebdb3497d4662bd3aa8bc48bf356f7912a5fa42f9bb4f8584817cadf165784",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8caaa17034e30866b5df3b1f0ebd60abcda8757e3aa141962b5c07a69608ffae",
+				"dweb:/ipfs/QmW3bspXQY8Khz4c63uUcRCnprSKcWJT8avaKqvkWo9NF4"
+			]
+		},
+		"lib/openzeppelin-contracts/contracts/interfaces/IERC20.sol": {
+			"keccak256": "0xc708c0fc983c4e74902c46b56f09d08688cf59561e819a069ea7bcdb506cf0f2",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://edac73f72cd3359f06b188458c74036ac06a586886db3345cc4c12b527a5bc7d",
+				"dweb:/ipfs/QmUkZZp9x8UnzHgGj6otpwYYVaxo6ZHSKH8Yr97wFu8Ydc"
+			]
+		},
+		"lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0xa2d847c6ad19f5b8ac7c6f4c462bb4c1fd76307cb17478c49743354cf122f77f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://bcb88894b8d6c2967694114eceba85a4dd40d7adea390e20e766657cb6d5d4be",
+				"dweb:/ipfs/QmQQVNAzL8PnhUCYzSvSoiEzuqNtEroBmyBgqCJ9hbKJ5B"
+			]
+		},
+		"lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+			"keccak256": "0x720e6c9abddab40e1c4801517e852b641acc71b599857038dcc55d6d932ed174",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9272084af787a62081ef3243bbc80c9eecc17ca453dba80a5582645ac12415e4",
+				"dweb:/ipfs/QmaVBuLsASZy3QYj8AxTRuR483sJJTYspvy7sB3epRcYTA"
+			]
+		},
+		"lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol": {
+			"keccak256": "0x773c2fd57770fb2dfb89ef76d4fad4a25d143b5d0ac26c8172cb947bff56ed3f",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://0663124601928d5f570f7e86f9f918e143f4a0b065f3512f3378bdc0fcd6e514",
+				"dweb:/ipfs/QmTi6ZMYnaHgiscJhyxA7Ebf6dsABGYgciQT9vMHa2ewrA"
+			]
+		},
+		"lib/openzeppelin-contracts/contracts/utils/Context.sol": {
+			"keccak256": "0x3dcd533a3f709bda89bb8e649eb97aed96578e606f3796609544b1dcff975a0b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://83fa9b15077fd2f33f6c175d694e2f7ae9c9a289c7feaca40aa7d6feb8d87c26",
+				"dweb:/ipfs/QmQLfKCJ7mjiEeCGN1sHgWT8wjAMbAmBqcBVoQQyUZa5ws"
+			]
+		},
+		"lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol": {
+			"keccak256": "0x564310f4788f096e1c1e77edd645999aa7fbad46dd545d7a722f70d5cfe19033",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://844ba854105b8a3e4cfb2cc37de926020beb97b238e85e00df05b79be953cec9",
+				"dweb:/ipfs/QmWG5HLDsFRNe3A2ZxvKcB79tqJN9V5yTwcBUjUPYhDki3"
+			]
+		},
+		"src/Kipu-Bank_v2.sol": {
+			"keccak256": "0x3da1c0bdf3fe3c76aa6fa1126d862757f3f2de256dadf03bebb3ea435ea8b5f7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://1fc3b2a3539f29bf59ac4a41f9336ed9327feaa66b2c94d5a4fc2d4fb2c0b06b",
+				"dweb:/ipfs/Qmb31M73MVW27KEPNCKZDbeVExA3LjojFxy9ooiuP4y7yv"
+			]
+		}
+	},
+	"version": 1
+}
