@@ -1,85 +1,86 @@
-# 🌐 KipuBank
+# 🌐 Kipu-Bank_v2
 
-## 🔹 Descripción
+## 🔹 Description
 
-**KipuBank V2** es la segunda versión del sistema bancario inteligente originalmente diseñado para manejar solo ETH. Esta nueva versión introduce un enfoque moderno, seguro y flexible basado en múltiples activos ERC-20, con un límite de riesgo dinámico expresado en USD y validado mediante oráculos de Chainlink.
+**Kipu-Bank_v2** is the second iteration of the smart banking system originally designed just for ETH handling. This new version introduces a modern, secure, and flexible approach based on multiple ERC-20 assets, with a dynamic risk limit expressed in USD and
+ es la segunda versión del sistema bancario inteligente originalmente diseñado para manejar solo ETH. Esta nueva versión introduce un enfoque moderno, seguro y flexible basado en múltiples activos ERC-20, con un límite de riesgo dinámico expresado en USD y validado mediante oráculos de Chainlink.
 
 ---
 
-## ✅ 1. Mejoras Realizadas y Fundamentación Técnica
+## ✅ 1. Improvements Made and Technical Rationale
 
-| Mejora | Descripción | Fundamento |
+| Improvement | Description | Rationale |
 |--------|------------|------------|
-| ✅ Soporte Multi-Token | Permite depósitos y retiros en **cualquier token ERC-20**, además de ETH (usando `address(0)` como alias). | Aumenta la flexibilidad y escalabilidad del banco digital. |
-| ✅ Bank Cap Dinámico en USD | El contrato no limita por ETH estático, sino por **valor total en USD** (`s_totalUsdValue`). | Modelo de riesgo realista adaptable a múltiples activos. |
-| ✅ Integración con Chainlink | Precios en tiempo real mediante feeds de Chainlink. | Previene desbalances y permite validar el valor total con precisión confiable. |
-| ✅ Validación de Precios Obsoletos | El contrato **rechaza transacciones si el precio está obsoleto o comprometido**. | Previene ataques de manipulación de precios (oracle risk). |
-| ✅ Lógica Interna Unificada | Uso de funciones internas `_deposit` y `_withdraw`. | DRY (Don't Repeat Yourself) y seguridad lógica centralizada. |
+| ✅ Multi-Token Support | Allows deposits and withdrawals in **any ERC-20 token**, in addition to ETH (using `address(0)` as an alias). | Increases the flexibility and scalability of the digital bank. |
+| ✅ Dynamic Bank Cap in USD | The contract does not limit by static ETH, but by **total value in USD** (`s_totalUsdValue`). | Realistic risk model adaptable to multiple assets. |
+| ✅ Integration with Chainlink | Real-time pricing via Chainlink feeds. | Prevents imbalances and allows the total value to be validated with reliable accuracy. |
+| ✅ Obsolete Price Validation | The contract **rejects transactions if the price is obsolete or compromised**. | Prevents price manipulation attacks (oracle risk). |
+| ✅ Unified Internal Logic | Use of internal functions `_deposit` and `_withdraw`. | DRY (Don't Repeat Yourself) and centralized logic security. |
 
 ---
 
-## 🛠️ 2. Instrucciones de Despliegue (Testnet Sepolia con Foundry)
+## 🛠️ 2. Deployment Instructions (Sepolia Testnet with Foundry)
 
-### 📍 Prerrequisitos
+### 📍 Prerequisites
 
-| Requisito | Valor |
+| Requirement | Value |
 |-----------|-------|
 | RPC URL | `$SEPOLIA_RPC_URL` |
 | Private Key | `$PRIVATE_KEY` |
-| Foundry instalado | ✅ |
-| ETH de prueba en la cuenta | ✅ |
+| Foundry installed | ✅ |
+| Test ETH in account | ✅ |
 
 ---
 
-### 📦 2.1 Comando de Despliegue + Verificación
+### 📦 2.1 Deployment Command + Verification
 
 ```bash
 forge script script/DeployKipuBank.s.sol:DeployKipuBank   --rpc-url $SEPOLIA_RPC_URL   --private-key $PRIVATE_KEY   --broadcast   --verify   -vvvv
 ```
 
-⚠️ `--verify` publica el código en Etherscan (requerido para entrega final y transparencia).
+⚠️ `--verify` publishes the code on Etherscan (required for final delivery and transparency).
 
 ---
 
-## 📍 3. Configuración Post-Despliegue (Asignación de Oráculos)
+## 📍 3. Post-Deployment Configuration (Oracle Assignment)
 
-El límite en USD requiere oráculos reales. Setearlos usando `setPriceFeed(address token, address priceFeed)`.
+The USD limit requires real oracles. Set them using `setPriceFeed(token address, priceFeed address)`.
 
-| Activo | Dirección Token (Sepolia) | Chainlink Price Feed |
+| Asset | Token Address (Sepolia) | Chainlink Price Feed |
 |--------|--------------------------|----------------------|
-| ETH | `0x0000000000000000000000000000000000000000` | `0x694AA1769357215DE4FAC081bf1f309aDC325306` |
+| ETH | `0x000000000000000000000000000000000000000` | `0x694AA1769357215DE4FAC081bf1f309aDC325306` |
 | USDC | `0x1c7d4b196cb0c7b01d743fbc6116a902379c7238` | `0xA2F78ab2355fe2f984D808B5CeE7FD0A93D5270E` |
 
-### ✅ Ejemplo para configurar USDC
+### ✅ Example for configuring USDC
 
 ```bash
-cast send <KIPU_BANK_ADDRESS> "setPriceFeed(address,address)"   "0x1c7d4b196cb0c7b01d743fbc6116a902379c7238"   "0xA2F78ab2355fe2f984D808B5CeE7FD0A93D5270E"   --private-key $PRIVATE_KEY
+cast send <KIPU_BANK_ADDRESS> “setPriceFeed(address,address)”   “0x1c7d4b196cb0c7b01d743fbc6116a902379c7238”   “0xA2F78ab2355fe2f984D808B5CeE7FD0A93D5270E”   --private-key $PRIVATE_KEY
 ```
 
 ---
 
-## 🧩 4. Decisiones de Diseño Clave y Trade-Offs
+## 🧩 4. Key Design Decisions and Trade-Offs
 
-### ✅ A. Precisión vs. Gas (Bank Cap)
-| Opción | Rechazada | Aceptada |
+### ✅ A. Accuracy vs. Gas (Bank Cap)
+| Option | Rejected | Accepted |
 |--------|-----------|----------|
-| Recalcular valor total iterando balances | ❌ Muy costoso en gas | |
-| Rastreo incremental con `s_totalUsdValue` | | ✅ Eficiente y estándar |
+| Recalculate total value by iterating balances | ❌ Very costly in gas | |
+| Incremental tracking with `s_totalUsdValue` | | ✅ Efficient and standard |
 
-🟡 *Riesgo asumido:* ligera desactualización si hay fluctuaciones entre transacciones.
+🟡 *Assumed risk:* slight outdatedness if there are fluctuations between transactions.
 
-### ✅ B. Seguridad en Fallback y Receive
+### ✅ B. Security in Fallback and Receive
 
-- Ambas funciones llaman a `this.deposit()`, garantizando que pasen por modificadores de seguridad (`withinBankCap`).
-- Previene bypasses si se envía ETH sin data.
+- Both functions call `this.deposit()`, ensuring that they pass through security modifiers (`withinBankCap`).
+- Prevents bypasses if ETH is sent without data.
 
-### ✅ C. Estandarización de ETH como Token
-- ETH se maneja como `address(0)`.
-- Abstracción permite lógica única para todos los activos.
+### ✅ C. Standardization of ETH as a Token
+- ETH is handled as `address(0)`.
+- Abstraction allows for unique logic for all assets.
 
 ---
 
-## 💻 5. Interacción Básica (Ejemplo)
+## 💻 5. Basic Interaction (Example)
 
 ```solidity
 depositToken(address tokenAddress, uint256 amount);
@@ -89,12 +90,14 @@ getMyBalance(address tokenAddress);
 
 ---
 
-## 🏁 6. Conclusión
+## 🏁 6. Conclusion
 
-✅ Seguro  | ✅ Profesional | ✅ Cumple estándares DeFi | ✅ Portafolio-ready
+✅ Secure  | ✅ Professional | ✅ Complies with DeFi standards | ✅ Portfolio-ready
 
-💬 *“KipuBank V2 representa la transición de un simple banco ETH a un sistema financiero tokenizado, escalable y gobernado por precio-realidad.”* 🚀
+💬 *“Kipu-Bank_V2 represents the transition from a simple ETH bank to a tokenized, scalable financial system governed by price-reality.”* 🚀
 
 ---
 
-👤 Autor: **Santiago Cármenes**
+👤 Author: **Santiago Cármenes**
+
+Translated with DeepL.com (free version)
