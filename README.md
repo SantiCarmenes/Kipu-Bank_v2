@@ -82,14 +82,14 @@ cast send <KIPU_BANK_ADDRESS> "setPriceFeed(address,address)"   "0x1c7d4b196cb0c
 ## 💻 5. Interacción Básica (Ejemplo)
 
 ```solidity
-deposit(address token, uint256 amount); // ETH => address(0)
-withdraw(address token, uint256 amount);
-getUsdValue(address user); // Retorna el valor total del usuario en USD
+depositToken(address tokenAddress, uint256 amount);
+withdrawToken(address tokenAddress, uint256 amount);
+getMyBalance(address tokenAddress);
 ```
 
 ---
 
-## 🏁 6. Conclusión: Proyecto Listo para Producción
+## 🏁 6. Conclusión
 
 ✅ Seguro  | ✅ Profesional | ✅ Cumple estándares DeFi | ✅ Portafolio-ready
 
@@ -98,5 +98,3 @@ getUsdValue(address user); // Retorna el valor total del usuario en USD
 ---
 
 👤 Autor: **Santiago Cármenes**
-📅 Versión: **Smart Contract V2 Final**
-📍 Licencia: **MIT**
