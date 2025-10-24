@@ -246,7 +246,6 @@ contract KipuBank is Ownable {
             revert KipuBank__StalePrice();
         }
 
-        // Usamos los decimales leídos desde la struct
         return (_amount * uint256(price)) / (10**uint256(token.decimals));
     }
 
